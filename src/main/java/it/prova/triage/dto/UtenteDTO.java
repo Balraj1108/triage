@@ -1,5 +1,6 @@
 package it.prova.triage.dto;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,7 @@ public class UtenteDTO {
 	private Date dateCreated;
 	private StatoUtente stato;
 	private Long[] ruoliIds;
+	private LocalDate dataRegistrazione;
 	@NotBlank
 	private String email;
 
@@ -48,6 +50,7 @@ public class UtenteDTO {
 				.nome(nome)
 				.cognome(cognome)
 				.dateCreated(dateCreated)
+				.dataRegistrazione(dataRegistrazione)
 				.email(email)
 				.stato(stato)
 				.build();
@@ -64,6 +67,7 @@ public class UtenteDTO {
 				.username(utenteModel.getUsername())
 				.nome(utenteModel.getNome())
 				.cognome(utenteModel.getCognome())
+				.dataRegistrazione(utenteModel.getDataRegistrazione())
 				.email(utenteModel.getEmail())
 				.stato(utenteModel.getStato())
 				.build();

@@ -1,5 +1,6 @@
 package it.prova.triage.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,8 @@ public class Utente {
 	private String email;
 	@Column(name = "dateCreated")
 	private Date dateCreated;
+	@Column(name = "dataregistrazione")
+	private LocalDate dataRegistrazione;
 
 	// se non uso questa annotation viene gestito come un intero
 	@Enumerated(EnumType.STRING)
