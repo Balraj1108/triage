@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-//import it.prova.triage.dto.DottorePazienteRequestDTO;
-//import it.prova.triage.dto.DottorePazienteResponseDTO;
+import it.prova.triage.dto.DottorePazienteResponseDTO;
+import it.prova.triage.dto.DottorePazienteRequestDTO;
+import it.prova.triage.dto.DottorePazienteResponseDTO;
 import it.prova.triage.dto.PazienteDTO;
 import it.prova.triage.model.Paziente;
 import it.prova.triage.model.StatoPaziente;
@@ -35,7 +36,7 @@ import reactor.core.publisher.Mono;
 public class PazienteController {
 
 	
-	//private static final Logger LOGGER = LogManager.getLogger(AssegnaPazienteController.class);
+	private static final Logger LOGGER = LogManager.getLogger(AssegnaPazienteController.class);
 	
 	@Autowired
 	private PazienteService pazienteService;
@@ -87,5 +88,41 @@ public class PazienteController {
 			throw new PazienteNonDimessoException("impossibile eliminare un paziente non dimesso");
 			
 		pazienteService.rimuovi(id);
+	}
+	
+	@PostMapping("/ricovera/{id}")
+	public DottorePazienteResponseDTO ricoveraPaziente(@PathVariable(required = true) Long id,@RequestBody DottorePazienteRequestDTO dottore) {
+		LOGGER.info(".........invocazione servizio esterno............");
+		
+		pazienteService.ricovera(id);
+		
+		ResponseEntity<DottorePazienteResponseDTO> response = webClient.post().uri("/ricovera")
+				.body(Mono.just(DottorePazienteRequestDTO.builder().codiceDottore(dottore.getCodiceDottore())
+						.codFiscalePazienteAttualmenteInVisita(dottore.getCodFiscalePazienteAttualmenteInVisita())
+						.build()), DottorePazienteRequestDTO.class)
+				.retrieve().toEntity(DottorePazienteResponseDTO.class).block();
+		
+		LOGGER.info(".........invocazione servizio esterno completata............");
+		
+		return DottorePazienteResponseDTO.builder().codiceDottore(response.getBody().getCodiceDottore())
+				.codFiscalePazienteAttualmenteInVisita(response.getBody().getCodFiscalePazienteAttualmenteInVisita()).build();
+	}
+	
+	@PostMapping("/dimetti/{id}")
+	public DottorePazienteResponseDTO dimettiPaziente(@PathVariable(required = true) Long id,@RequestBody DottorePazienteRequestDTO dottore) {
+		LOGGER.info(".........invocazione servizio esterno............");
+		
+		pazienteService.dimetti(id);
+		
+		ResponseEntity<DottorePazienteResponseDTO> response = webClient.post().uri("/ricovera")
+				.body(Mono.just(DottorePazienteRequestDTO.builder().codiceDottore(dottore.getCodiceDottore())
+						.codFiscalePazienteAttualmenteInVisita(dottore.getCodFiscalePazienteAttualmenteInVisita())
+						.build()), DottorePazienteRequestDTO.class)
+				.retrieve().toEntity(DottorePazienteResponseDTO.class).block();
+		
+		LOGGER.info(".........invocazione servizio esterno completata............");
+		
+		return DottorePazienteResponseDTO.builder().codiceDottore(response.getBody().getCodiceDottore())
+				.codFiscalePazienteAttualmenteInVisita(response.getBody().getCodFiscalePazienteAttualmenteInVisita()).build();
 	}
 }

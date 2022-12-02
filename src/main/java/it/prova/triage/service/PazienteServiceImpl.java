@@ -10,6 +10,7 @@ import it.prova.triage.model.Paziente;
 import it.prova.triage.model.StatoPaziente;
 import it.prova.triage.repository.paziente.PazienteRepository;
 import it.prova.triage.web.api.exception.PazienteNotFoundException;
+import it.prova.triage.web.api.exception.PazienteNotInVisitaException;
 
 @Service
 public class PazienteServiceImpl implements PazienteService {
@@ -54,4 +55,37 @@ public class PazienteServiceImpl implements PazienteService {
 		result.setCodiceDottore(cd);
 		pazienteRepository.save(result);
 	}
+	
+	@Override
+	public void ricovera(Long id) {
+		Paziente result = pazienteRepository.findById(id).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		if(!result.getStato().equals(StatoPaziente.IN_VISITA))
+			throw new PazienteNotInVisitaException("impossibile ricoverare un paziente non in visita");
+		
+		result.setStato(StatoPaziente.RICOVERATO);
+		result.setCodiceDottore(null);
+		
+		pazienteRepository.save(result);
+	}
+
+	@Override
+	public void dimetti(Long id) {
+		Paziente result = pazienteRepository.findById(id).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		if(!result.getStato().equals(StatoPaziente.IN_VISITA))
+			throw new PazienteNotInVisitaException("impossibile dimettere un paziente non in visita");
+		
+		result.setStato(StatoPaziente.DIMESSO);
+		result.setCodiceDottore(null);
+		
+		pazienteRepository.save(result);
+	}
+
 }

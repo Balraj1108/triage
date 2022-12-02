@@ -17,4 +17,8 @@ public interface PazienteService {
 	public void rimuovi(Long idToRemove);
 	
 	public void impostaCodiceDottore(String cf, String cd);
+	
+	public void ricovera(Long id);
+	
+	public void dimetti(Long id);
 }
