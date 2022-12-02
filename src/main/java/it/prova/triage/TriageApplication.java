@@ -74,12 +74,14 @@ public class TriageApplication implements CommandLineRunner {
 				.nome("giorgio")
 				.cognome("bianchi")
 				.codiceFiscale("giorgiobianchi")
+				
 				.build());
 		
 		pazienteService.inserisciNuovo(Paziente.builder()
 				.nome("baldott")
 				.cognome("singhdott")
 				.codiceFiscale("balsinghdott")
+				
 				.build());
 		
 	}
