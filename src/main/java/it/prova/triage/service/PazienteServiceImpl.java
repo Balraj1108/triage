@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import it.prova.triage.model.Paziente;
 import it.prova.triage.model.StatoPaziente;
 import it.prova.triage.repository.paziente.PazienteRepository;
+import it.prova.triage.web.api.exception.PazienteNotFoundException;
 
 @Service
 public class PazienteServiceImpl implements PazienteService {
@@ -41,5 +42,16 @@ public class PazienteServiceImpl implements PazienteService {
 	@Override
 	public void rimuovi(Long idToRemove) {
 		pazienteRepository.deleteById(idToRemove);
+	}
+
+	@Override
+	public void impostaCodiceDottore(String cf, String cd) {
+		Paziente result = pazienteRepository.findByCodiceFiscale(cf).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		result.setCodiceDottore(cd);
+		pazienteRepository.save(result);
 	}
 }
